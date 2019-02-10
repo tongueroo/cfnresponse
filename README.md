@@ -1,8 +1,6 @@
 # Cfnresponse
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cfnresponse`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Cfnresponse helps with writing [Custom CloudFormation resources](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html). The main method is `send_response`, which builds the response that is sent back to CloudFormation service from the Lambda function.
 
 ## Installation
 
@@ -20,20 +18,37 @@ Or install it yourself as:
 
     $ gem install cfnresponse
 
-## Usage
+## Example Usage
 
-TODO: Write usage instructions here
+```ruby
+require "cfnresponse"
+include Cfnresponse
 
-## Development
+def lambda_handler(event:, context:)
+  print("Received event: " + json_pretty(event))
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+  case event['RequestType']
+  when "Create"
+    # create logic
+    send_response(event, context, SUCCESS)
+  when "Update"
+    # update logic
+    send_response(event, context, SUCCESS)
+  when "Delete"
+    # delete logic
+    send_response(event, context, SUCCESS)
+  end
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  sleep 10 # a little time for logs to be sent to CloudWatch
 
-## Contributing
+# We rescue all exceptions and send an message to CloudFormation so we dont have to
+# wait for over an hour for the stack operation to timeout and rollback.
+rescue Exception => e
+  puts e.message
+  puts e.backtrace
+  sleep 10 # a little time for logs to be sent to CloudWatch
+  send_response(event, context, "FAILED")
+end
+```
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cfnresponse.
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+* [Cfnresponse code](lib/cfnresponse.rb)

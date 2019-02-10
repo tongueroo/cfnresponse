@@ -6,10 +6,12 @@ module Cfnresponse
   class Error < StandardError; end
 
   # Debugging puts kept to help debug custom resources
-  def send_response(event, context, response_status, response_data={}, physical_id="PhysicalId")
+  def send_response(event, context, response_status, response_data={}, physical_id="PhysicalId", reason=nil)
+    reason ||= "See the details in CloudWatch Log Stream: #{context.log_stream_name.inspect}"
+
     response_body = JSON.dump(
       Status: response_status,
-      Reason: "See the details in CloudWatch Log Stream: #{context.log_stream_name.inspect}",
+      Reason: reason,
       PhysicalResourceId: physical_id,
       StackId: event['StackId'],
       RequestId: event['RequestId'],
