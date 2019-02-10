@@ -4,7 +4,7 @@ class Main
   include Cfnresponse
 
   def lambda_handler(event:, context:)
-    print("Received event: " + json_pretty(event))
+    puts("Received event: " + json_pretty(event))
 
     case event['RequestType']
     when "Create"
@@ -46,7 +46,7 @@ RSpec.describe Cfnresponse do
     expect(Cfnresponse::VERSION).not_to be nil
   end
 
-  it "does something useful" do
+  it "lambda_handler" do
     main = Main.new
     body_data = main.lambda_handler(event: event, context: context) # due to CFNRESPONSE_TEST=1
     pp body_data # uncomment to debug
@@ -60,5 +60,19 @@ RSpec.describe Cfnresponse do
        "LogicalResourceId"=>"MyLogicalId",
        "Data"=>{}}
     )
+  end
+
+  it "lambda_function" do
+    code = IO.read("./spec/fixtures/lambda_function.rb")
+    # Seems to be the only way to mimic access the methods by include Cfnresponse like json_pretty
+    eval %Q{
+      class MainScope
+        #{code}
+      end
+    }
+    scope = MainScope.new
+
+    data = scope.json_pretty(a: 1)
+    expect(data).to eq JSON.pretty_generate(a: 1)
   end
 end
