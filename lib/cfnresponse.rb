@@ -1,5 +1,6 @@
 require "cfnresponse/version"
 require "json"
+require "net/http"
 require "uri"
 
 module Cfnresponse
@@ -9,18 +10,20 @@ module Cfnresponse
   def send_response(event, context, response_status, response_data={}, physical_id="PhysicalId", reason=nil)
     reason ||= "See the details in CloudWatch Log Stream: #{context.log_stream_name.inspect}"
 
-    response_body = JSON.dump(
-      Status: response_status,
-      Reason: reason,
-      PhysicalResourceId: physical_id,
-      StackId: event['StackId'],
-      RequestId: event['RequestId'],
-      LogicalResourceId: event['LogicalResourceId'],
-      Data: response_data
-    )
+    body_data = {
+      "Status" => response_status,
+      "Reason" => reason,
+      "PhysicalResourceId" => physical_id,
+      "StackId" => event['StackId'],
+      "RequestId" => event['RequestId'],
+      "LogicalResourceId" => event['LogicalResourceId'],
+      "Data" => response_data
+    }
 
     puts "Response body:\n"
-    puts json_pretty(JSON.load(response_body))
+    puts json_pretty(body_data)
+
+    response_body = JSON.dump(body_data) # response_body is a JSON string
 
     url = event['ResponseURL']
     uri = URI(url)
@@ -39,7 +42,7 @@ module Cfnresponse
 
     if ENV['CFNRESPONSE_TEST']
       puts "uri #{uri.inspect}"
-      return # early return to not send the request
+      return body_data # early return to not send the request
     end
 
     res = http.request(req)

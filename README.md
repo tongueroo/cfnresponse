@@ -30,13 +30,13 @@ def lambda_handler(event:, context:)
   case event['RequestType']
   when "Create"
     # create logic
-    send_response(event, context, SUCCESS)
+    send_response(event, context, "SUCCESS")
   when "Update"
     # update logic
-    send_response(event, context, SUCCESS)
+    send_response(event, context, "SUCCESS")
   when "Delete"
     # delete logic
-    send_response(event, context, SUCCESS)
+    send_response(event, context, "SUCCESS")
   end
 
   sleep 10 # a little time for logs to be sent to CloudWatch
