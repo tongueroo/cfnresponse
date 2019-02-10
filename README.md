@@ -41,7 +41,7 @@ def lambda_handler(event:, context:)
 
   sleep 10 # a little time for logs to be sent to CloudWatch
 
-# We rescue all exceptions and send an message to CloudFormation so we dont have to
+# We rescue all exceptions and send a message to CloudFormation so we don't have to
 # wait for over an hour for the stack operation to timeout and rollback.
 rescue Exception => e
   puts e.message
