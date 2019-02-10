@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Tung Nguyen"]
   spec.email         = ["tongueroo@gmail.com"]
 
-  spec.summary       = %q{CloudFormation send_response helpers to help with custom resources}
+  spec.summary       = %q{CloudFormation send_response helper for custom resource}
   spec.homepage      = "https://github.com/tongueroo/cfnresponse"
   spec.license       = "MIT"
 
