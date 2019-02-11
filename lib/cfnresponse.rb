@@ -8,7 +8,7 @@ module Cfnresponse
 
   # Debugging puts kept to help debug custom resources
   def send_response(event, context, response_status, response_data={}, physical_id="PhysicalId", reason=nil)
-    reason ||= "See the details in CloudWatch Log Stream: #{context.log_stream_name.inspect}"
+    reason ||= "See the details in CloudWatch Log Group: #{context.log_group_name} Log Stream: #{context.log_stream_name}"
 
     body_data = {
       "Status" => response_status,

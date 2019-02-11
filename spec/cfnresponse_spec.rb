@@ -39,7 +39,10 @@ RSpec.describe Cfnresponse do
     }
   end
   let(:context) do
-    OpenStruct.new(log_stream_name: "fake-stream-name")
+    OpenStruct.new(
+      log_group_name: "fake-log-group",
+      log_stream_name: "fake-log-stream",
+    )
   end
 
   it "has a version number" do
@@ -52,7 +55,7 @@ RSpec.describe Cfnresponse do
     pp body_data # uncomment to debug
     expect(body_data).to eq(
       {"Status"=>"SUCCESS",
-       "Reason"=>"See the details in CloudWatch Log Stream: \"fake-stream-name\"",
+       "Reason"=>%Q|See the details in CloudWatch Log Group: fake-log-group Log Stream: fake-log-stream|,
        "PhysicalResourceId"=>"PhysicalId",
        "StackId"=>
         "arn:aws:cloudformation:us-west-2:112233445566:stack/Bucket-5HWSC7WEFBT0/1671c9d0-2ccb-11e9-a131-06737af08cb6",
