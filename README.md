@@ -1,5 +1,7 @@
 # Cfnresponse
 
+NOTE: This library has been replaced by [tongueroo/cfn_response](https://github.com/tongueroo/cfn_response). It's interface is much improved.
+
 [![BoltOps Badge](https://img.boltops.com/boltops/badges/boltops-badge.png)](https://www.boltops.com)
 
 Cfnresponse helps with writing [Custom CloudFormation resources](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html). The main method is `send_response`, which builds the response that is sent back to CloudFormation service from the Lambda function.
